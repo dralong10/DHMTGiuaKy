@@ -44,6 +44,25 @@ namespace FirstSharpGLProject
                 gl.Flush();// Thực hiện lệnh vẽ ngay lập tức thay vì đợi sau 1 khoảng thời gian
             }
         }
+        //Vẽ đường tròn
+        public class Circle:Shape
+        {
+            public Point Start { get; set; }
+            public Point End { get; set; }
+
+            public override void draw(OpenGL gl)
+            {
+                base.draw(gl);
+                //Vẽ đường tròn
+                gl.Begin(SharpGL.OpenGL.GL_LINE_LOOP);
+                double R = Math.Sqrt((End.X - Start.X) * (End.X - Start.X) + (End.Y - Start.Y) * (End.Y - Start.Y));
+                for (int i = 0; i < 360; i++)
+                    gl.Vertex(Math.Cos(2 * Math.PI * i / 360) * R + Start.X, gl.RenderContextProvider.Height - (Math.Sin(2 * Math.PI * i / 360) * R + Start.Y));
+                gl.End();
+                gl.Flush();
+            }
+        }
+
 
         /*Phần vẽ Ellipse cho bạn nào làm tham khảo*/
 
@@ -242,8 +261,17 @@ namespace FirstSharpGLProject
                         }
                         break;
                     case 1: // Vẽ hình tròn ở đây
-                        if (drawing == 2)
+                        Circle newCircle = new Circle
                         {
+                            Start = pStart,
+                            End = pEnd,
+                            ShapeColor = userColor,
+                            Size = shSize
+                        };
+                        newCircle.draw(gl);
+                        if(drawing==2)
+                        {
+                            shapes.Add(newCircle);
                             drawing = 0;
                         }
                         break;
